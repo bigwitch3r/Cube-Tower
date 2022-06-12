@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class ExplodeCubes : MonoBehaviour
 {
+    public GameObject restartButton;
+
     private bool _collisionSet;
 
     private void OnCollisionEnter(Collision collision)
@@ -17,6 +19,8 @@ public class ExplodeCubes : MonoBehaviour
                 child.SetParent(null);
             }
 
+            restartButton.SetActive(true);
+            Camera.main.transform.position -= new Vector3(0, 0, 3f);
             Destroy(collision.gameObject);
             _collisionSet = true;
         }

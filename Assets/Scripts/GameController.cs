@@ -11,6 +11,8 @@ public class GameController : MonoBehaviour
 
     private CubePos nowCube = new CubePos(0, 1, 0);
     private Rigidbody allCubesRb;
+    private bool IsLose;
+    private Coroutine showCubePlace;
 
     private List<Vector3> allCubesPositions = new List<Vector3>
     {
@@ -29,12 +31,12 @@ public class GameController : MonoBehaviour
     private void Start()
     {
         allCubesRb = allCubes.GetComponent<Rigidbody>();
-        StartCoroutine(ShowCubePlace());
+        showCubePlace = StartCoroutine(ShowCubePlace());
     }
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0) || Input.touchCount > 0)
+        if ((Input.GetMouseButtonDown(0) || Input.touchCount > 0) && cubeToPlace != null)
         {
 
 #if !UNITY_EDITOR
@@ -55,6 +57,14 @@ public class GameController : MonoBehaviour
 
             SpawnPositions();
         }
+
+        if (!IsLose && allCubesRb.velocity.magnitude > 0.1f)
+        {
+            Destroy(cubeToPlace.gameObject);
+            IsLose = true;
+            StopCoroutine(showCubePlace);
+        }
+
     }
 
     IEnumerator ShowCubePlace()
