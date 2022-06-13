@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,10 +9,11 @@ public class GameController : MonoBehaviour
     public Transform cubeToPlace;
     public float cubeChangePlaceSpeed = 0.5f;
     public GameObject cubeToCreate, allCubes;
+    public GameObject[] canvasStartPage;
 
     private CubePos nowCube = new CubePos(0, 1, 0);
     private Rigidbody allCubesRb;
-    private bool IsLose;
+    private bool IsLose, firstCube;
     private Coroutine showCubePlace;
 
     private List<Vector3> allCubesPositions = new List<Vector3>
@@ -45,6 +47,21 @@ public class GameController : MonoBehaviour
                 return;
             }
 #endif
+
+            if (EventSystem.current.IsPointerOverGameObject())
+            {
+                return;
+            }
+
+            if (!firstCube)
+            {
+                firstCube = true;
+
+                foreach (GameObject obj in canvasStartPage)
+                {
+                    Destroy(obj);
+                }
+            }
 
             GameObject newCube = Instantiate(cubeToCreate, cubeToPlace.position, Quaternion.identity) as GameObject;
             newCube.transform.SetParent(allCubes.transform);
