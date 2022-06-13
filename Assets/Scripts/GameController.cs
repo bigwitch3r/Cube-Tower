@@ -98,12 +98,12 @@ public class GameController : MonoBehaviour
         if ((Input.GetMouseButtonDown(0) || Input.touchCount > 0) && cubeToPlace != null && allCubes != null && !EventSystem.current.IsPointerOverGameObject())
         {
 
-#if !UNITY_EDITOR
+/*#if !UNITY_EDITOR
             if (Input.GetTouch(0).phase != TouchPhase.Began)
             {
                 return;
             }
-#endif
+#endif*/
 
             if (!firstCube)
             {
