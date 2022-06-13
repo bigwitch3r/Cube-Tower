@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,9 +9,11 @@ public class GameController : MonoBehaviour
 {
     public Transform cubeToPlace;
     public float cubeChangePlaceSpeed = 0.5f;
-    public GameObject cubeToCreate, allCubes, vfx;
+    public GameObject allCubes, vfx;
     public GameObject[] canvasStartPage;
     public Color[] bgColors;
+    public Text scoreTxt;
+    public GameObject[] cubesToCreate;
 
     private CubePos nowCube = new CubePos(0, 1, 0);
     private Rigidbody allCubesRb;
@@ -35,8 +38,53 @@ public class GameController : MonoBehaviour
         new Vector3(1, 0, -1)
     };
 
+    private List<GameObject> possibleCubesToCreate = new List<GameObject>();
+
     private void Start()
     {
+        if (PlayerPrefs.GetInt("score") < 5)
+        {
+            possibleCubesToCreate.Add(cubesToCreate[0]);
+        }
+        else if (PlayerPrefs.GetInt("score") < 10)
+        {
+            AddPossibleCubes(2);
+        }
+        else if (PlayerPrefs.GetInt("score") < 15)
+        {
+            AddPossibleCubes(3);
+        }
+        else if (PlayerPrefs.GetInt("score") < 20)
+        {
+            AddPossibleCubes(4);
+        }
+        else if (PlayerPrefs.GetInt("score") < 25)
+        {
+            AddPossibleCubes(5);
+        }
+        else if (PlayerPrefs.GetInt("score") < 30)
+        {
+            AddPossibleCubes(6);
+        }
+        else if (PlayerPrefs.GetInt("score") < 35)
+        {
+            AddPossibleCubes(7);
+        }
+        else if (PlayerPrefs.GetInt("score") < 40)
+        {
+            AddPossibleCubes(8);
+        }
+        else if (PlayerPrefs.GetInt("score") < 45)
+        {
+            AddPossibleCubes(9);
+        }
+        else
+        {
+            AddPossibleCubes(10);
+        }
+
+
+        scoreTxt.text = "–екорд: " + PlayerPrefs.GetInt("score") + "\n—чет: 0";
         toCameraColor = Camera.main.backgroundColor;
         mainCam = Camera.main.transform;
         camMoveToYPosition = 5.9f + nowCube.y - 1f;
@@ -67,12 +115,22 @@ public class GameController : MonoBehaviour
                 }
             }
 
-            GameObject newCube = Instantiate(cubeToCreate, cubeToPlace.position, Quaternion.identity) as GameObject;
+            GameObject createCube = null;
+            if (possibleCubesToCreate.Count == 1)
+            {
+                createCube = possibleCubesToCreate[0];
+            }
+            else
+            {
+                createCube = possibleCubesToCreate[UnityEngine.Random.Range(0, possibleCubesToCreate.Count)];
+            }
+
+            GameObject newCube = Instantiate(createCube, cubeToPlace.position, Quaternion.identity) as GameObject;
             newCube.transform.SetParent(allCubes.transform);
 
             nowCube.setVector(cubeToPlace.position);
             allCubesPositions.Add(nowCube.getVector());
-
+               
             if (PlayerPrefs.GetString("music") != "No")
             {
                 GetComponent<AudioSource>().Play();
@@ -210,6 +268,15 @@ public class GameController : MonoBehaviour
             }
         }
 
+        maxY--;
+
+        if (PlayerPrefs.GetInt("score") < maxY)
+        {
+            PlayerPrefs.SetInt("score", maxY);
+        }
+
+        scoreTxt.text = "–екорд: " + PlayerPrefs.GetInt("score") + "\n—чет: " + maxY;
+
         camMoveToYPosition = 5.9f + nowCube.y - 1f;
 
         maxHor = maxX > maxZ ? maxX : maxZ;
@@ -231,6 +298,14 @@ public class GameController : MonoBehaviour
         else if (maxY >= 2)
         {
             toCameraColor = bgColors[0];
+        }
+    }
+
+    private void AddPossibleCubes(int till)
+    {
+        for (int i = 0; i < till; i++)
+        {
+            possibleCubesToCreate.Add(cubesToCreate[i]);
         }
     }
 }

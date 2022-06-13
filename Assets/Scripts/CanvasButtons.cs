@@ -24,14 +24,34 @@ public class CanvasButtons : MonoBehaviour
         }
         else
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); //перезагружаем активную сцену, не привязывая к индексу
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 
         }
         IEnumerator RestartGameIE()
         {
             yield return new WaitForSeconds(0.3f);
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); //перезагружаем активную сцену, не привязывая к индексу
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
+    }
+
+    public void LoadShop()
+    {
+        if (PlayerPrefs.GetString("music") != "No")
+        {
+            GetComponent<AudioSource>().Play();
+        }
+
+        SceneManager.LoadScene("Shop");
+    }
+
+    public void CloseShop()
+    {
+        if (PlayerPrefs.GetString("music") != "No")
+        {
+            GetComponent<AudioSource>().Play();
+        }
+
+        SceneManager.LoadScene("Main");
     }
 
     public void LoadGitHub()
